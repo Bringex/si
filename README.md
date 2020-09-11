@@ -1,7 +1,7 @@
 # lab_1_task_3
 
 
-'''
+```
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -38,7 +38,7 @@ int main()
 
 	return 0;
 }
-'''
+```
 ---------------------
 
 # lab_1_task_4

@@ -43,6 +43,7 @@ int main()
 
 # lab_1_task_4
 
+```
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -97,7 +98,7 @@ string getBySelectionSort(vector<double> array_vils, vector<double> array_ids){
 
 	return "";
 }
-
+```
 --------------------
 # lab_2_task_1
 

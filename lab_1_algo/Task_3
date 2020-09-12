@@ -1,0 +1,19 @@
+#include <stdio.h>
+  
+int main()
+{
+  //строка и целое число
+  int integer;
+  char str[100];
+
+  printf("Write string: ");
+  scanf("%s", &str);
+  printf("Write integer: ");
+  scanf("%d", &integer);
+  printf("String: %s, Integer: %i", str, integer);
+
+  getchar();
+  getchar();
+
+  return 0;
+}

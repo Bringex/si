@@ -1,0 +1,23 @@
+#include <stdio.h>
+#include <math.h>
+
+#define PI acos(-1.0)
+
+int main()
+{
+  //лаба 2 вариант 1
+  double a;
+  double first_answer;
+  double second_answer;
+
+  printf("Write a: ");
+  scanf("%lf", &a);
+  
+  first_answer = 2 * pow(sin(3 * PI - 2 * a), 2) * pow(cos(5 * PI + 2 * a), 2);
+  second_answer = 0.25 * (1 - sin(2.5 * PI - 8 * a));
+
+  printf("Z1: %lf, Z2: %lf", first_answer, second_answer);
+
+  getchar();
+  return 0;
+}

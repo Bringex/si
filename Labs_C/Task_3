@@ -1,1 +1,24 @@
-code
+#include <stdio.h>
+#include <math.h>
+
+#define PI acos(-1.0)
+
+int main()
+{
+  //лаба 3 вариант 18
+  // 1. 16    2.8     3. 16    4. влево 2      5. или
+  long a, b;
+  
+  printf("1. Write hex number: ");
+  scanf("%x", &a);
+  printf("2. In octal system: %o \n", a);
+
+  printf("3. In hex: %x, Left 2 bits: %x \n", a, a << 2);
+  printf("4. In hex: %x, Negation: %x \n", a, ~a);
+  printf("Write octal number: ");
+  scanf("%o", &b);
+  printf("5. OR in octal: %o", b | a);
+  
+  getchar();
+  return 0;
+}

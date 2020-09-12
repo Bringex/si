@@ -5,7 +5,7 @@
 
 int main()
 {
-  //лаба 2 вариант 1
+  //лаба 2 вариант 18
   double a;
   double first_answer;
   double second_answer;

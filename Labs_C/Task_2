@@ -12,12 +12,16 @@ int main()
 
   printf("Write a: ");
   scanf("%lf", &a);
+
+  if (a != 0 && a != 2){
+    first_answer = ((a + 2) / sqrt(2 * a) - a / (sqrt(2 * a) + 2) + 2 / (a - sqrt(2 * a))) * (sqrt(a) - sqrt(2)) / (a + 2);
+    second_answer = 1 / (sqrt(a) + sqrt(2));
+
+    printf("Z1: %lf, Z2: %lf", first_answer, second_answer);
+  }
+  else
+    printf("Error");
   
-  first_answer = 2 * pow(sin(3 * PI - 2 * a), 2) * pow(cos(5 * PI + 2 * a), 2);
-  second_answer = 0.25 * (1 - sin(2.5 * PI - 8 * a));
-
-  printf("Z1: %lf, Z2: %lf", first_answer, second_answer);
-
   getchar();
   return 0;
 }

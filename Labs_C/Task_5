@@ -7,10 +7,8 @@ int main()
 {
   // 77, 12, 74, 34, 56, 78, 234, 678
 
-  int numbers[8];
+  int numbers[] = {77, 12, 74, 34, 56, 78, 234, 678};
   
-  for (int i = 0; i < 8; i++)
-    scanf("%d", &numbers[i]);
   for (int i = 0; i < 8; i++)
     printf("%d ", numbers[i]);
 

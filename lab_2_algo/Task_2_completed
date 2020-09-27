@@ -1,0 +1,88 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <cstdlib>
+#include <map>
+#include <list>
+
+using namespace std;
+
+struct block {
+    string country;
+    vector<string> names;
+};
+
+
+void quickSort(vector<block> &arr, long left, long right);
+
+
+int main()
+{
+    long n_count, i, j;
+ 
+    freopen("race.in", "r", stdin);
+    freopen("race.out", "w", stdout);
+    vector<block> list_block;
+    map<string, list<string>> map;
+
+    cin >> n_count;
+    
+    for (i = 0; i < n_count; i++){
+      string first = "";
+      string second = "";
+      cin >> first >> second;
+
+      if (map.count(first))
+        map[first].push_back(second);
+      else 
+        map[first] = list<string> {second}; 
+    }
+
+    for (auto& it : map) { 
+      block elem = block();
+      elem.country = it.first;
+      vector<string> names;
+      for (auto v : it.second)
+        names.push_back(v);
+      elem.names = names;
+      list_block.push_back(elem);
+    }  
+
+      
+     quickSort(list_block, 0, list_block.size() - 1);
+    
+    for (i = 0; i < list_block.size(); i++) { 
+      cout << "=== " << list_block[i].country <<  " ===" << "\n"; 
+      for (j = 0; j < list_block[i].names.size(); j++)
+        cout << list_block[i].names[j] << "\n"; 
+    }     
+    return 0;
+}
+
+void quickSort(vector<block> &arr, long left, long right) {
+      long i = left, j = right;
+      block tmp;
+
+      string pivot = arr[left + rand() % (right - left + 1)].country;
+      
+      while (i <= j) {
+            while (arr[i].country < pivot)
+                  i++;
+            while (arr[j].country > pivot)
+                  j--;
+            if (i <= j) {
+                  tmp = arr[i];
+                  arr[i] = arr[j];
+                  arr[j] = tmp;
+                  i++;
+                  j--;
+            }
+      };
+      
+      if (left < j)
+            quickSort(arr, left, j);
+      if (i < right)
+            quickSort(arr, i, right);
+}

@@ -1,0 +1,113 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <cstdlib>
+#include <map>
+#include <list>
+
+using namespace std;
+
+struct block {
+    string country;
+    vector<string> names;
+};
+
+void mergeSort(vector<block> &arr, int l, int r);
+void merge(vector<block> &arr, int l, int m, int r);
+
+
+
+int main()
+{
+    long n_count, i, j;
+ 
+    freopen("sum.in", "r", stdin);
+    freopen("sum.out", "w", stdout);
+    vector<block> list_block;
+    map<string, list<string>> map;
+
+    cin >> n_count;
+    
+    for (i = 0; i < n_count; i++){
+      string first = "";
+      string second = "";
+      cin >> first >> second;
+
+      if (map.count(first))
+        map[first].push_back(second);
+      else 
+        map[first] = list<string> {second}; 
+    }
+
+    for (auto& it : map) { 
+
+     // cout << "=== " << it.first <<  " ===" << "\n"; 
+      block elem = block();
+      elem.country = it.first;
+      vector<string> names;
+      for (auto v : it.second)
+        names.push_back(v);
+      elem.names = names;
+      list_block.push_back(elem);
+    }  
+    mergeSort(list_block, 0, list_block.size() - 1);
+
+    string name = "";
+    for (i = 0; i < list_block.size(); i++) { 
+      cout << "=== " << list_block[i].country <<  " ===" << "\n"; 
+      for (j = 0; j < list_block[i].names.size(); j++)
+        cout << list_block[i].names[j] << "\n"; 
+    }     
+    return 0;
+}
+
+void mergeSort(vector<block> &arr, int l, int r){
+    if (l < r){
+      int len = (l + r) / 2;
+
+      mergeSort(arr, l, len);
+      mergeSort(arr, len + 1, r);
+      merge(arr, l, len, r);
+    }
+}
+
+void merge(vector<block> &arr, int l, int m, int r) 
+{ 
+    int i, j, k; 
+    int left_size = m - l + 1; 
+    int right_size = r - m; 
+
+    vector<block> left_arr;
+    vector<block> right_arr;
+  
+
+    for (i = 0; i < left_size; i++, j++) 
+        left_arr[i] = arr[l + i]; 
+    for (j = 0; j < right_size; j++) 
+        right_arr[j] = arr[m + 1 + j]; 
+  
+    i = 0;
+    j = 0;
+    k = l;
+
+    while (i < left_size && j < right_size)
+        if (left_arr[i].country <= right_arr[j].country)
+            arr[k++] = left_arr[i++]; 
+        else
+            arr[k++] = right_arr[j++]; 
+  
+    while (i < left_size) { 
+        arr[k] = left_arr[i]; 
+        i++; 
+        k++; 
+    } 
+  
+    while (j < right_size) { 
+        arr[k] = right_arr[j]; 
+        j++; 
+        k++; 
+    }
+} 
+ 

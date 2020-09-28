@@ -1,0 +1,80 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <cstdlib>
+#include <map>
+#include <list>
+
+using namespace std;
+
+unsigned long long global_count = 0;
+void mergeSort(vector<int> &arr, int l, int r);
+void merge(vector<int> &arr, int l, int m, int r);
+
+int main()
+{
+    long n_count, i, j;
+ 
+    freopen("inversions.in", "r", stdin);
+    freopen("inversions.out", "w", stdout);
+  
+    cin >> n_count;
+    vector<int> arr (n_count);
+
+    for (i = 0; i < n_count; i++){
+       cin >> arr[i];
+    }
+
+    mergeSort(arr, 0, arr.size() - 1);
+
+    cout << "\n" << global_count;
+
+    
+    return 0; 
+}
+
+void mergeSort(vector<int> &arr, int l, int r){
+    if (l < r){
+      int len = (l + r) / 2;
+
+      mergeSort(arr, l, len);
+      mergeSort(arr, len + 1, r);
+      merge(arr, l, len, r);
+    }
+}
+
+void merge(vector<int> &arr, int l, int m, int r) 
+{ 
+    int i, j, k; 
+    int left_size = m - l + 1; 
+    int right_size = r - m; 
+
+    vector<int> left_arr (left_size);
+    vector<int> right_arr (right_size);
+
+    for (i = 0; i < left_size; i++, j++) 
+        left_arr[i] = arr[l + i]; 
+    for (j = 0; j < right_size; j++) 
+        right_arr[j] = arr[m + 1 + j]; 
+  
+    i = 0;
+    j = 0;
+    k = l;
+
+    while (i < left_size && j < right_size)
+      if (left_arr[i] <= right_arr[j])
+        arr[k++] = left_arr[i++]; 
+      else 
+      {
+        arr[k++] = right_arr[j++];
+        global_count += left_size - i;
+      }
+    
+    while (i < left_size) 
+      arr[k++] = left_arr[i++]; 
+        
+    while (j < right_size) 
+      arr[k++] = right_arr[j++]; 
+} 

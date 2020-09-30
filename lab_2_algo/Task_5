@@ -1,1 +1,29 @@
 # k algo
+
+
+void kth(int a[], int l, int r, int k) {
+    int i = l, j = r, v = a[(l + r) / 2];
+
+    do {
+        while(a[i] < v) {
+            i++;
+        }
+
+        while(a[j] > v) {
+            j--;
+        }
+
+        if (i <= j) {
+            swap(a[i], a[j]);
+            i++;
+            j--;
+        }
+    } while (i <= j);
+
+    if ((j > l) && (k <= j)) {
+        kth(a, l, j, k);
+    }
+    if ((i < r) && (k >= j)) {
+        kth(a, i, r, k);
+    }
+}

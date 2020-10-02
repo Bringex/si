@@ -1,0 +1,34 @@
+import numpy as np
+from PIL import Image, ImageDraw
+import collections
+
+# 1 открытие изображения
+image = Image.open("image/labo.jpg")  # Открываем изображение.
+
+# 2 Квантование
+pixels = np.array(image)[64]  # берется центральная строка
+for i in range(128):
+    pixels[i] = (pixels[i] // 20) * 20
+
+# 3 вывод
+#for i in range(128):
+#    print(pixels[i])
+
+# 4 частота встречания значений
+list_arr = []
+# поместим только red channel в массив
+for i in range(128):
+    list_arr.append(pixels[i][0])
+
+# подсчитаем частоту
+new_list_arr = collections.Counter(list_arr)
+count_elements = len(new_list_arr)
+for i in new_list_arr:
+    print(str(i) + ": " + str(new_list_arr[i] / 128))
+
+# подсчёт энтропии
+entro = 0
+for val in new_list_arr:
+    entro += np.log2(new_list_arr[val]) * new_list_arr[val] / 128
+print(-entro)
+

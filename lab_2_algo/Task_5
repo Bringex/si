@@ -27,3 +27,5 @@ void kth(int a[], int l, int r, int k) {
         kth(a, i, r, k);
     }
 }
+
+Тупа ГРОБ

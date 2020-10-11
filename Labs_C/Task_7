@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <math.h>
+#include <malloc.h>
+
+//Виды электрических ламп (накаливания, дневного света, галогенные и т.п.).
+//Отобразить: галогенная лампа.
+// 8
+// квадрат (периметр, площадь)
+
+//MP3 проигрыватель-диктофон. Элементы: воспроизведение вкл/выкл, пауза
+//вкл/выкл, запись вкл/выкл.
+
+//
+enum lamps {
+    INCANDESCENT = 1,
+    DAY,
+    HALOGEN,
+    REFLECTOR,
+    METALHALIDE,
+    LED,
+    ENERGY_SAVING,
+    MERCURIAL,
+    INFRARED,   
+};
+
+struct Point
+{
+  int x, y;
+};
+struct Square{
+  struct Point point1, point2, point3, point4;
+  int p, s, A, B;
+};
+
+struct MP3
+{
+  unsigned char Play: 1;
+  unsigned char Stop: 1;
+  unsigned char Record: 1;
+};
+
+
+int main()
+{
+  struct Square square;
+  long number;
+  struct MP3 mp3;
+  
+  printf("lamp: %d\n", MERCURIAL); // 1 
+  
+  square.point1.x = square.point1.y = 0;
+  square.point2.x = square.point3.x = 4;
+  square.point2.y = square.point4.x = 0;
+  square.point3.y = square.point4.y = 5;
+
+  square.A = sqrt(pow(square.point4.x - square.point1.x, 2) + pow(square.point4.y - square.point1.y, 2));
+  square.B = sqrt(pow(square.point2.x - square.point1.x, 2) + pow(square.point2.y - square.point1.y, 2));
+  square.p = 2 * (square.A + square.B);
+  square.s = square.A * square.B;
+  printf("A: %d, B: %d, P: %d, S: %d\n", square.A, square.B, square.p, square.s); // 2
+
+  // 3 поля то есть нужно трёхзначное 16чное число: 0x111
+
+  scanf("%x", &(mp3));
+  printf("Play: %d, Stop: %d, Record: %d", mp3.Play, mp3.Stop, mp3.Record);
+
+
+
+  return 0;
+}

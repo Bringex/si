@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <math.h>
 
-#define PI acos(-1.0)
 
 int main()
 {
@@ -24,7 +23,5 @@ int main()
   
   printf("%d %d\n%d %d", result[0], result[1], result[2], result[3]);
   
-
-  getchar();
   return 0;
 }

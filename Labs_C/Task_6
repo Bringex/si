@@ -2,7 +2,8 @@
 #include <math.h>
 #include <malloc.h>
 
-
+//что возвращает malloc (что такое (int*))
+//free что такое? 
 int main()
 {
 

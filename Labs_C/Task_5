@@ -1,3 +1,5 @@
+// спрашивает обычно про размер массива
+
 #include <stdio.h>
 #include <math.h>
 
@@ -13,7 +15,9 @@ int main()
 
   int matrix_one[4] = {1, 0, 1, 4};
   int matrix_two[4] = {1, 2, 0, 1};
-
+  
+  
+  
   int result[4] = {
                    matrix_one[0] * matrix_two[0] + matrix_one[1] * matrix_two[2],
                    matrix_one[0] * matrix_two[1] + matrix_one[1] * matrix_two[3],

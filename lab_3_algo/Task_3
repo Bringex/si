@@ -10,25 +10,34 @@
 using namespace std;
 
 int getCharByK(string str, int k){
+    // тут я просто беру kый с конца символ
     return (int)str[str.length() - k - 1];
 }
 vector<string> radixSort(vector<string> arr, int n, int ks){
     int p = 1, index, temp, count = 0;
     int k = ks;
-    int max = 130;
-    vector<list<string>> blocks (max);
-    
+    int max = 130; //видимо в тестах именно такой отрезок
+    //создаем 130 списков
+    vector<list<string>> blocks (max); 
+    //основная суть пробежаться k раз и по всем строчкам
     for (int i = 0; i < k; i++){
+        //в этом цикле мы просто добавляем в список из 130 списков
+        //наш элемент по коду его iго символа (типа a = 90 например, хз сколько там)
         for (int j = 0; j < n; j++){
             int num = getCharByK(arr[j], i);
-            blocks[num % max].push_back(arr[j]);
+            blocks[num % max].push_back(arr[j]); //добавляем
         }
         
-        count = 0;
+        count = 0; //нужен для создания нового arr
         for (int j = 0; j < max; j++){
+            //если список j не пустой
             while (!blocks[j].empty())
             {
+                //начинаем строить новый arr
+                //begin - берет первый элемент из списка
+                //* - разименование
                 arr[count] = *(blocks[j].begin());
+                //удалаяем этот элемент списка
                 blocks[j].erase(blocks[j].begin());
                 count++;
             }

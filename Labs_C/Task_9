@@ -1,0 +1,24 @@
+#include <stdio.h>
+#include <malloc.h>
+
+
+int main()
+{
+
+//Преобразовать цифру, введённую с консоли в строку, содержащую числительное,
+//соответствующее этой цифре. Результат вывести на консоль.
+    int st, count, price = 0;
+
+    //task 3
+    int d;
+    char* c = malloc(sizeof(char));
+    scanf("%d", &d);
+    sprintf(c, "%d", d);
+    printf("%s\n\n", c);
+
+    //task 5
+    scanf("%d", &st);
+    scanf("%d", &price);
+    
+  return 0;
+}

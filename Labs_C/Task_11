@@ -1,0 +1,85 @@
+# main.c
+
+#include <stdio.h>
+#include "main.h"
+
+
+int main()
+{
+  int x1 = 0, y1 = 0, x2 = 0, y2 = 0, x3 = 0, y3 = 0;
+  printf("asdadsd\n");
+  scanf("%d %d %d %d %d %d", &x1, &y1, &x2, &y2, &x3, &y3);
+  struct Treangle Treangle = create_struct(x1, y1, x2, y2, x3, y3);
+  S(Treangle);
+  P(Treangle);
+  //printTrangle(Treangle);
+
+  return 0;
+}
+
+
+#main.h
+#ifndef MAIN_H_
+#define MAIN_H_
+
+
+struct Point{
+    int x;
+    int y;
+};
+struct Treangle{
+    struct Point point1;
+    struct Point point2;
+    struct Point point3;
+    double S, P;
+    int L1, L2, L3;
+};
+void S(struct Treangle Treangle);
+void P(struct Treangle Treangle);
+struct Treangle create_struct(int x1, int y1, int x2, int y2, int x3, int y3);
+void printTrangle(struct Treangle Treangle);
+int min(int, int);
+
+#endif // MAIN_H_
+
+
+#main2.c
+
+    if (Treangle.L1 > l1)
+        l2 = Treangle.L1;
+    if (Treangle.L2 > l1 && Treangle.L2 < l2)
+        l2 = Treangle.L2;
+    if (Treangle.L3 > l1 && Treangle.L3 < l2)
+        l2 = Treangle.L3;
+
+
+    Treangle.S = (l1 * l2) * 1.0 * 0.5;
+    printf("\nS: %lf", Treangle.S);
+}
+void P(struct Treangle Treangle){
+    Treangle = size(Treangle);
+    Treangle.P = Treangle.L1 + Treangle.L2 + Treangle.L3;
+    printf("\nP: %lf", Treangle.P);
+
+}
+struct Treangle create_struct(int x1, int y1, int x2, int y2, int x3, int y3){
+    struct Treangle Treangle;
+    struct Point point1;
+    struct Point point2;
+    struct Point point3;
+    point1.x = x1;
+    point2.x = x2;
+    point3.x = x3;
+    point1.y = y1;
+    point2.y = y2;
+    point3.y = y3;
+
+    Treangle.point1 = point1;
+    Treangle.point2 = point2;
+    Treangle.point3 = point3;
+
+    return Treangle;
+}
+void printTrangle(struct Treangle Treangle){
+    printf("S: %lf, P: %d", Treangle.S, Treangle.P);
+}

@@ -1,4 +1,4 @@
-#3 
+#1
 
 #include <stdio.h>
 #include <stdio.h>
@@ -50,6 +50,55 @@ int main()
     
     
     fclose(file);
+  }
+  
+  return 0;
+}
+
+
+
+#3
+#include <stdio.h>
+#include <stdio.h>
+#include <malloc.h>
+
+
+int main()
+{
+  FILE * file1 = fopen("date.txt", "w+");
+  FILE * file2 = fopen("date1.txt", "w+");
+  FILE * file3;
+  char data1[30];
+  char data2[30];
+  
+
+  if (file1 != NULL && file2 != NULL )
+  {
+    fprintf(file1, "file1");    
+    fprintf(file2, "file2");     
+    fclose(file1);
+    fclose(file2);
+  }
+
+  file1 = fopen("date.txt", "r");
+  file2 = fopen("date1.txt", "r");
+  file3 = fopen("date2.txt", "w+");
+
+  if (file1 != NULL && file2 != NULL && file3 != NULL)
+  {
+    fgets(data1, 30, file1);
+    fgets(data2, 30, file2);
+    fprintf(file3, data1);
+    fprintf(file3, "\n");
+    fprintf(file3, data2);
+     
+
+    //printf("%s", data1);
+
+
+    fclose(file1);
+    fclose(file2);
+    fclose(file3);
   }
   
   return 0;

@@ -1,0 +1,56 @@
+#3 
+
+#include <stdio.h>
+#include <stdio.h>
+#include <string.h>
+#include <malloc.h>
+
+//3
+int lenNum(int num){
+  int count = 0;
+  while (num / 10 > 0)
+  {
+    count++;
+    num /= 10;
+  }
+  return count;
+}
+char *convert(int num1, int num2, int num3){
+
+  char* str1 = malloc(sizeof(char) * lenNum(num1));
+  char* str2 = malloc(sizeof(char) * lenNum(num2));
+  char* str3 = malloc(sizeof(char) * lenNum(num3));
+  char* result = malloc(sizeof(char) * (lenNum(num3) + lenNum(num1) + lenNum(num2)));
+  int index = 0;
+  
+  sprintf(str1, "%d", num1);
+  sprintf(str2, "%d", num2);
+  sprintf(str3, "%d", num3);
+  strcpy(result, "");
+  strcat(result, strcat(str1, "."));
+  strcat(result, strcat(str2, "."));
+  strcat(result, strcat(str3, "\n"));
+  printf("%s", result);
+  
+  return result;
+}
+
+
+int main()
+{ 
+  FILE * file;
+  FILE * file1;
+  if ((file = fopen("date.txt", "w+")) != NULL )
+  {
+
+    for (int i = 29; i <= 31; i++)
+        fprintf(file, convert(i, 10, 2020));    
+    for (int i = 1; i <= 7; i++)
+        fprintf(file, convert(i, 11, 2020)); 
+    
+    
+    fclose(file);
+  }
+  
+  return 0;
+}

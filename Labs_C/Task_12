@@ -94,8 +94,6 @@ int main()
      
 
     //printf("%s", data1);
-
-
     fclose(file1);
     fclose(file2);
     fclose(file3);

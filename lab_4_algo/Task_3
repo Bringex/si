@@ -1,0 +1,73 @@
+ #include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <cstdlib>
+   
+   
+using namespace std;
+   
+   
+       
+class Stack{
+    public:
+    vector<char> arr;
+    long top = 0;
+     
+    Stack(long n){
+        arr = vector<char> (n);
+    }
+   
+    void Push (char n){
+        arr[++top] = n;
+    }
+   
+    char Pop (){
+        return arr[top--];  
+    }
+ 
+};
+   
+   
+   
+   
+int main() {
+   
+    ios_base::sync_with_stdio(false);
+  
+  
+    freopen("brackets.in", "r", stdin);
+    freopen("brackets.out", "w", stdout);
+ 
+    Stack stack = Stack(5000005);
+    string g;
+    bool answer = true;
+ 
+    while(getline(cin, g)){
+        for (int i = 0; i < g.length(); i++)
+            if (g[i] =='(')
+                stack.Push('(');
+            else if (g[i] == '[')
+                stack.Push('[');
+            else if (g[i] == ')')
+                if (stack.arr[stack.top] == '(' && stack.top != 0)
+                    stack.Pop();
+                else
+                    answer = false;
+            else if (g[i] == ']')
+                if (stack.arr[stack.top] == '[' && stack.top != 0)
+                    stack.Pop();
+                else
+                    answer = false;
+         
+        if (answer && stack.top == 0)
+            cout << "YES" << "\n"; 
+        else
+            cout << "NO" << "\n"; 
+ 
+        answer = true;
+        stack.top = 0;
+    }
+    return 0;
+}

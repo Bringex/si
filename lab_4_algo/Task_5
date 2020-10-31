@@ -1,0 +1,68 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <cstdlib>
+#include <cmath>
+   
+   
+using namespace std;
+ 
+int binarySearchFirst(int *arr, int l, int r, int num){
+ 
+    while (r > 1 + l){
+        int m = (r + l) / 2;
+         
+        if (arr[m] < num) //сжимаем область
+            l = m;
+        else
+            r = m; // если равно, то доходим до первого.
+    }
+ 
+    if (arr[r] == num)
+        return r + 1;
+    else
+        return -1;
+}
+ 
+int binarySearchLast(int *arr, int l, int r, int num){
+    l = -1;
+    while(r > l + 1)
+    {
+        int m = (l + r) / 2;
+ 
+        if (num < arr[m])
+            r = m;
+        else
+            l = m;
+    }
+    if (arr[l] == num)
+        return l + 1;
+    else
+        return -1;
+}
+ 
+int main() {
+   
+    ios_base::sync_with_stdio(false);
+  
+  
+    freopen("binsearch.in", "r", stdin);
+    freopen("binsearch.out", "w", stdout);
+    int n, m, num;
+    cin >> n;
+    int *arr = new int[n];
+ 
+    for (int i = 0; i < n; i++)
+        cin >> arr[i];
+     
+    cin >> m;
+    for (int i = 0; i < m; i++)
+    {
+        cin >> num;
+        cout << binarySearchFirst(arr, -1, n, num) << " " << binarySearchLast(arr, -1, n, num) <<  "\n";
+    }
+ 
+    return 0;
+}

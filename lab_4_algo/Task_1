@@ -1,0 +1,56 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <cstdlib>
+  
+  
+using namespace std;
+  
+  
+      
+class Stack{
+    public:
+    vector<long> arr;
+    int top = 0;
+    Stack(long n){
+        arr = vector<long> (n);
+    }
+  
+    void Push (long n){
+        arr[++top] = n;
+    }
+  
+    long Pop (){
+        return arr[top--];  
+    }
+};
+  
+  
+  
+  
+int main() {
+  
+    ios_base::sync_with_stdio(false);
+ 
+ 
+    freopen("stack.in", "r", stdin);
+    freopen("stack.out", "w", stdout);
+    int n;
+    cin >> n;
+    Stack stack = Stack(n);
+    char s;
+    long num;
+    for (int i = 0; i < n; i++){
+        cin >> s;
+        if (s == '+'){
+            cin >> num;
+            stack.Push(num);
+        }
+        else if (s == '-')
+            cout << stack.Pop() << "\n";  
+  
+    }
+    return 0;
+}

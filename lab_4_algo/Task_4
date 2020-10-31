@@ -1,0 +1,63 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <cstdlib>
+   
+   
+using namespace std;
+   
+   
+       
+class Stack{
+    public:
+    vector<int> arr;
+    int top = 0;
+     
+    Stack(int n){
+        arr = vector<int> (n);
+    }
+   
+    void Push (int n){
+        arr[++top] = n;
+    }
+   
+    int Pop (){
+        return arr[top--];  
+    }
+ 
+};
+   
+   
+   
+   
+int main() {
+   
+    ios_base::sync_with_stdio(false);
+  
+  
+    freopen("postfix.in", "r", stdin);
+    freopen("postfix.out", "w", stdout);
+ 
+    Stack stack = Stack(1000);
+    string g;
+    getline(cin, g);
+    for (int i = 0; i < g.length(); i++)
+        if (g[i] == '+')
+            stack.Push(stack.Pop() + stack.Pop());
+ 
+        else if (g[i] == '-'){
+            int num =  (stack.Pop() - stack.Pop());
+            num = (-1) * num;
+            stack.Push(num);
+        }
+        else if (g[i] == '*')
+            stack.Push(stack.Pop() * stack.Pop());
+ 
+        else if (g[i] != ' ')
+            stack.Push(stoi(string(1, g[i])));
+ 
+    cout << stack.Pop() << "\n";
+    return 0;
+}

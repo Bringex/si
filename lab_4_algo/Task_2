@@ -1,0 +1,66 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <cstdlib>
+  
+  
+using namespace std;
+  
+  
+      
+class Queue{
+    public:
+    vector<long> arr;
+    int tail = 0;
+    int head = 0;
+    Queue(long n){
+        arr = vector<long> (n);
+    }
+  
+    void Enqueue (long n){
+        arr[tail] = n;
+        if (tail == arr.size())
+            tail = 0;
+        else
+            tail++;
+    }
+  
+    void Dequeue (){
+        cout << arr[head] << "\n";
+        if (head == arr.size())
+            head = 0;
+        else
+            head++;
+ 
+    }
+};
+  
+  
+  
+  
+int main() {
+  
+    ios_base::sync_with_stdio(false);
+ 
+ 
+    freopen("queue.in", "r", stdin);
+    freopen("queue.out", "w", stdout);
+    int n;
+    cin >> n;
+    Queue queue = Queue(n);
+    char s;
+    long num;
+    for (int i = 0; i < n; i++){
+        cin >> s;
+        if (s == '+'){
+            cin >> num;
+            queue.Enqueue(num);
+        }
+        else if (s == '-')
+            queue.Dequeue();  
+  
+    }
+    return 0;
+}

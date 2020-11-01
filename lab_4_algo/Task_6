@@ -1,0 +1,53 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <cstdlib>
+#include <cmath>
+  
+  
+using namespace std;
+
+
+int main() {
+  
+    ios_base::sync_with_stdio(false);
+ 
+ 
+    freopen("garland.in", "r", stdin);
+    freopen("garland.out", "w", stdout);
+    int n;
+    double A;
+    cin >> n >> A;
+    double l = 0;
+    double r = A;
+    double answer = -1;
+
+    while (r - l > 0.00000001)
+    {
+        double m = (r + l) / 2;
+        double now = m;
+        double prev = A;
+        double next = 0;
+        bool check = m > 0;
+
+        //check
+        for (int i = 2; i < n; i++){
+            next = 2 * (now + 1) - prev;
+            if ( next <= 0)
+                check = false;
+            prev = now;
+            now = next;
+        }
+        if (check){
+            r = m;
+            answer = now;
+        }
+        else 
+            l = m;
+    }
+    cout.precision(2);
+    cout << fixed << answer << "\n";
+    return 0;
+}

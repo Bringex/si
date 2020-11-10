@@ -20,10 +20,6 @@ typedef struct{
 } frame;
 
 int convert_length(unsigned char length[]){
-
-    //printf("\n%d", ntohl(contentFrame)));
-    //printf("\n%d", ((length[0]) | ((length[1] << 7)&0x7F) | (length[2] << 14) | (length[3] << 21)));
-    //printf("\n%d", (length[3] | )))
     //printf("\nlength: %d %d %d %d", length[0], length[1], length[2], length[3]);
 
     typedef union{
@@ -37,16 +33,9 @@ int convert_length(unsigned char length[]){
     number.byte[2] = length[1];
     number.byte[3] = length[0];
 
-    //printf("\n%d", number.val);
     return number.val;
 }
 unsigned char *value_to_array(int value){
-
-    //printf("\n%d", ntohl(contentFrame)));
-    //printf("\n%d", ((length[0]) | ((length[1] << 7)&0x7F) | (length[2] << 14) | (length[3] << 21)));
-    //printf("\n%d", (length[3] | )))
-    //printf("\nlength: %d %d %d %d", length[0], length[1], length[2], length[3]);
-
     typedef union{
         int val;
         unsigned char byte[4];
@@ -54,22 +43,17 @@ unsigned char *value_to_array(int value){
 
     split number;
     number.val = value;
-    printf("\nvalue%d ", number.val);
 
     unsigned char* length = malloc(4 * sizeof(char));
     length[0] = number.byte[3];
     length[1] = number.byte[2];
     length[2] = number.byte[1];
     length[3] = number.byte[0];
-    //printf("\nsize: %d %d %d %d", length[0], length[1], length[2], length[3]);
-
-    //printf("\n%d", number.val);
     return length;
 }
 
 
 
-//print all
 void show (char* file_name){
 
 
@@ -201,8 +185,6 @@ void set (char* file_name, char* TAG, char* value){
         fread(&head, 1, 10, file);
         int size_tag = convert_length(head.length);
 
-        //printf("\n%d", size_tag);
-
         while (ftell(file) < size_tag){
 
             frame framer;
@@ -221,66 +203,60 @@ void set (char* file_name, char* TAG, char* value){
                 unsigned char* partTwo = malloc((nendLength)* sizeof(char));
                 fread(partTwo, 1, nendLength, file); // save
 
-                unsigned char* partOne = malloc((index - size)* sizeof(char));
+                unsigned char* partOne = malloc((index - size - 10)* sizeof(char));
 
                 //we need to change tag size
-                int newLengthTag = size_tag - size + strlen(value);
+                int newLengthTag = size_tag - size + strlen(value) + 1;
 
                 file2 = fopen("copy.mp3", "w+b");
                 fclose(file2);
                 file2 = fopen("copy.mp3", "r+b");
+
                 fseek(file, 0, SEEK_SET);
                 fseek(file2, 0, SEEK_SET);
-                unsigned char *lengthfile = value_to_array(sizeof(value));
-                
-                fread(partOne, 1, index - size, file);
-                
-                unsigned char *lengthfile2 = value_to_array(sizeof(value));
-                
+                unsigned char *lengthfile = value_to_array(strlen(value) + 1);
+                fseek(file, 10, 0);
+                fread(partOne, 1, index - size - 10, file); //-10 it's header
+
+                unsigned char *lengthfile2 = value_to_array(newLengthTag);
+
                 head.length[0] = lengthfile2[0];
                 head.length[1] = lengthfile2[1];
                 head.length[2] = lengthfile2[2];
                 head.length[3] = lengthfile2[3];
-                fwrite();
-                fwrite(partOne, 1, index - size, file2);
-                
-                //length = ;
-                //printf("\nsize: %d %d %d %d", length[0], length[1], length[2], length[3]);
-                framer.size[0] = lengthfile2[0];
-                framer.size[1] = lengthfile2[1];
-                framer.size[2] = lengthfile2[2];
-                framer.size[3] = lengthfile2[3];
+                fwrite(&head, 1, sizeof(head), file2);
+                fwrite(partOne, 1, index - size - 10, file2);
+
+                framer.size[0] = lengthfile[0];
+                framer.size[1] = lengthfile[1];
+                framer.size[2] = lengthfile[2];
+                framer.size[3] = lengthfile[3];
 
                 fwrite(&framer, 1, sizeof(framer), file2);
+                char cur = 0;
+                fwrite(&cur, 1, 1, file2);
                 fwrite(value, 1, strlen(value), file2);
                 fwrite(partTwo, 1, nendLength, file2);
-                printf("\nsize of file: %d", sizeofFile);
 
                 free(partTwo);
                 free(partOne);
 
                 fseek(file2, 0, SEEK_END);
-                int sizeFile2 = ftell(file2); //размер итогово файла 2
+                int sizeFile2 = ftell(file2);
                 fseek(file, 0, SEEK_SET);
                 fseek(file2, 0, SEEK_SET);
-                //fseek(file2, 0, SEEK_SET);
-                //unsigned char* AllFile = malloc((sizeFile2)* sizeof(char)); // пихаем файл 2 в массив
-                //fwrite(AllFile, 1, sizeFile2, file2);
-                char c;
+
+
                 fclose(file);
                 file = fopen(file_name, "w");
                 fclose(file);
                 file = fopen(file_name, "r+b");
+
                 int i = 0;
                 while(i++ < sizeFile2)
-                {
-                    printf("aa ");
                     putc(getc(file2), file);
 
-                }
-                
-                
-                
+                printf("\nChanged %s to %s", TAG, value);
                 break;
             }
 
@@ -289,8 +265,6 @@ void set (char* file_name, char* TAG, char* value){
     }
     else
         printf("error");
-
-    //fclose(file);
 }
 void print_header(header head){
     printf("\nmarker: %d %d %d", head.marker[0], head.marker[1], head.marker[2]);
@@ -301,18 +275,22 @@ void print_header(header head){
 }
 int main()
 {
+    //int argc, char* argv[]
     //char *locale = setlocale(LC_ALL, "");
-    int number;
-    char buffer[] = "test5.mp3";
-    header head;
 
-    //show(buffer);
+    //printf("%\ns", argv[1]);
+    //printf("%\ns", argv[2]);
+
+    char* buffer = "full4.mp3";
+    //header head;
+
+    show(buffer);
     //get(buffer, "TIT2");
-   // get(buffer, "TPE1");
+    //get(buffer, "TPE1");
     //get(buffer, "TPE2");
 
-    set(buffer, "TIT2", "opaoppppllllllk");
-    //set(buffer, "TPE1", "haha tpe1");
-    //set(buffer, "TPE2", "tpe2");
+    set(buffer, "TIT2", "xuy jopa");
+    set(buffer, "TPE1", "poshel naxuy");
+    set(buffer, "TALB", "govno");
     return 0;
 }

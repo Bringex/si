@@ -1,0 +1,44 @@
+file2 = fopen("copy.mp3", "w+b");
+                fclose(file2);
+                file2 = fopen("copy.mp3", "r+b");
+                fseek(file, 0, SEEK_SET);
+                fseek(file2, 0, SEEK_SET);
+
+                
+                fread(partOne, 1, index - size, file);
+                fwrite(partOne, 1, index - size, file2);
+                unsigned char *length = value_to_array(sizeof(value));
+                //length = ;
+                //printf("\nsize: %d %d %d %d", length[0], length[1], length[2], length[3]);
+                framer.size[0] = length[0];
+                framer.size[1] = length[1];
+                framer.size[2] = length[2];
+                framer.size[3] = length[3];
+
+                fwrite(&framer, 1, sizeof(framer), file2);
+                fwrite(value, 1, strlen(value), file2);
+                fwrite(partTwo, 1, nendLength, file2);
+                printf("\nsize of file: %d", sizeofFile);
+
+                free(partTwo);
+                free(partOne);
+
+                fseek(file2, 0, SEEK_END);
+                int sizeFile2 = ftell(file2); //размер итогово файла 2
+                fseek(file, 0, SEEK_SET);
+                fseek(file2, 0, SEEK_SET);
+                //fseek(file2, 0, SEEK_SET);
+                //unsigned char* AllFile = malloc((sizeFile2)* sizeof(char)); // пихаем файл 2 в массив
+                //fwrite(AllFile, 1, sizeFile2, file2);
+                char c;
+                fclose(file);
+                file = fopen(file_name, "w");
+                fclose(file);
+                file = fopen(file_name, "r+b");
+                int i = 0;
+                while(i++ < sizeFile2)
+                {
+                    printf("aa ");
+                    putc(getc(file2), file);
+
+                }

@@ -1,19 +1,255 @@
-file2 = fopen("copy.mp3", "w+b");
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <malloc.h>
+#include <locale.h>
+#include "string.h"
+
+typedef struct{
+    unsigned char marker[3];
+    unsigned char version[1];
+    unsigned char sub_version[1];
+    unsigned char flags[1];
+    unsigned char length[4];
+} header;
+
+typedef struct{
+    unsigned char Frame_ID[4];
+    unsigned char size[4];
+    unsigned char flags[2];
+} frame;
+
+int convert_length(unsigned char length[]){
+
+    //printf("\n%d", ntohl(contentFrame)));
+    //printf("\n%d", ((length[0]) | ((length[1] << 7)&0x7F) | (length[2] << 14) | (length[3] << 21)));
+    //printf("\n%d", (length[3] | )))
+    //printf("\nlength: %d %d %d %d", length[0], length[1], length[2], length[3]);
+
+    typedef union{
+        int val;
+        unsigned char byte[4];
+    } split;
+
+    split number;
+    number.byte[0] = length[3] & 0x7F;
+    number.byte[1] = length[2];
+    number.byte[2] = length[1];
+    number.byte[3] = length[0];
+
+    //printf("\n%d", number.val);
+    return number.val;
+}
+unsigned char *value_to_array(int value){
+
+    //printf("\n%d", ntohl(contentFrame)));
+    //printf("\n%d", ((length[0]) | ((length[1] << 7)&0x7F) | (length[2] << 14) | (length[3] << 21)));
+    //printf("\n%d", (length[3] | )))
+    //printf("\nlength: %d %d %d %d", length[0], length[1], length[2], length[3]);
+
+    typedef union{
+        int val;
+        unsigned char byte[4];
+    } split;
+
+    split number;
+    number.val = value;
+    printf("\nvalue%d ", number.val);
+
+    unsigned char* length = malloc(4 * sizeof(char));
+    length[0] = number.byte[3];
+    length[1] = number.byte[2];
+    length[2] = number.byte[1];
+    length[3] = number.byte[0];
+    //printf("\nsize: %d %d %d %d", length[0], length[1], length[2], length[3]);
+
+    //printf("\n%d", number.val);
+    return length;
+}
+
+
+
+//print all
+void show (char* file_name){
+
+
+    FILE* file = fopen(file_name, "rb");
+    header head;
+    if ((file) != NULL)
+    {
+
+        fseek(file, 0, SEEK_SET);
+        fread(&head, 1, 10, file);
+        //print_header(head);
+        int size_tag = convert_length(head.length) + 10;
+
+        printf("\n%d", size_tag);
+
+        while (ftell(file) < size_tag){
+
+            frame framer;
+            fread(&framer, 1, 10, file);
+            int size = convert_length(framer.size);
+            //printf("\n%d %d %d %d", framer.size[0],framer.size[1],framer.size[2],framer.size[3]);
+            //printf("\nsize: %d", size);
+            unsigned char* mediaFrame = malloc(size * sizeof( char));
+            fread(mediaFrame, 1, size, file);
+            for (unsigned int i = 0; i < size; i++)
+                printf("%c", mediaFrame[i]);
+            printf(" ");
+
+        }
+
+    }
+    else
+        printf("error");
+
+
+
+}
+void show_tag_name (char* file_name){
+
+
+    FILE* file = fopen(file_name, "rb");
+    header head;
+    if ((file) != NULL)
+    {
+
+        fseek(file, 0, SEEK_SET);
+        fread(&head, 1, 10, file);
+        //print_header(head);
+        int size_tag = convert_length(head.length) + 10;
+
+        printf("\n%d", size_tag);
+
+        while (ftell(file) < size_tag){
+
+            frame framer;
+            fread(&framer, 1, 10, file);
+            int size = convert_length(framer.size);
+            //printf("\n%d %d %d %d", framer.size[0],framer.size[1],framer.size[2],framer.size[3]);
+            //printf("\nsize: %d", size);
+            unsigned char* mediaFrame = malloc(size * sizeof( char));
+            fread(mediaFrame, 1, size, file);
+            printf("%c%c%c%c", framer.Frame_ID[0], framer.Frame_ID[1], framer.Frame_ID[2], framer.Frame_ID[3]);
+            printf("\n");
+
+        }
+
+    }
+    else
+        printf("error");
+    fclose(file);
+
+
+}
+
+
+void get (char* file_name, char* TAG){
+
+    FILE* file = fopen(file_name, "rb");
+    header head;
+
+    if ((file) != NULL)
+    {
+
+        fseek(file, 0, SEEK_SET);
+        fread(&head, 1, 10, file);
+        int size_tag = convert_length(head.length) + 10;
+
+        //printf("\n%d", size_tag);
+
+        while (ftell(file) < size_tag){
+
+            frame framer;
+            fread(&framer, 1, 10, file);
+            int size = convert_length(framer.size);
+            unsigned char* mediaFrame = malloc(size * sizeof( char));
+            fread(mediaFrame, 1, size, file);
+
+            if (framer.Frame_ID[0] == TAG[0] && framer.Frame_ID[1] == TAG[1] &&
+                framer.Frame_ID[2] == TAG[2] && framer.Frame_ID[3] == TAG[3]
+                ){
+                printf("\n");
+                printf("%c%c%c%c", framer.Frame_ID[0], framer.Frame_ID[1], framer.Frame_ID[2], framer.Frame_ID[3]);
+                printf("\n");
+                for (unsigned int i = 0; i < size; i++)
+                    printf("%c", mediaFrame[i]);
+                break;
+            }
+        }
+
+    }
+    else
+        printf("error");
+
+    fclose(file);
+
+}
+void set (char* file_name, char* TAG, char* value){
+
+    FILE* file2;
+    FILE* file = fopen(file_name, "r+b");
+    header head;
+    int sizeofFile = 0;
+    if ((file) != NULL)
+    {
+
+        fseek(file, 0, SEEK_END);
+        sizeofFile = ftell(file);
+        fseek(file, 0, SEEK_SET);
+        fread(&head, 1, 10, file);
+        int size_tag = convert_length(head.length);
+
+        //printf("\n%d", size_tag);
+
+        while (ftell(file) < size_tag){
+
+            frame framer;
+            fread(&framer, 1, 10, file);
+            int size = convert_length(framer.size);
+            unsigned char* mediaFrame = malloc(size * sizeof( char));
+            fread(mediaFrame, 1, size, file);
+            if (size == 0)
+                continue;
+            if (framer.Frame_ID[0] == TAG[0] && framer.Frame_ID[1] == TAG[1] &&
+                framer.Frame_ID[2] == TAG[2] && framer.Frame_ID[3] == TAG[3]
+                ){
+
+                unsigned int index = ftell(file) - 10;
+                unsigned int nendLength = sizeofFile - ftell(file); //
+                unsigned char* partTwo = malloc((nendLength)* sizeof(char));
+                fread(partTwo, 1, nendLength, file); // save
+
+                unsigned char* partOne = malloc((index - size)* sizeof(char));
+
+                //we need to change tag size
+                int newLengthTag = size_tag - size + strlen(value);
+
+                file2 = fopen("copy.mp3", "w+b");
                 fclose(file2);
                 file2 = fopen("copy.mp3", "r+b");
                 fseek(file, 0, SEEK_SET);
                 fseek(file2, 0, SEEK_SET);
-
+                unsigned char *lengthfile = value_to_array(sizeof(value));
                 
                 fread(partOne, 1, index - size, file);
+                
+                unsigned char *lengthfile2 = value_to_array(sizeof(value));
+                
+                head.length[0] = lengthfile2[0];
+                head.length[1] = lengthfile2[1];
+                head.length[2] = lengthfile2[2];
+                head.length[3] = lengthfile2[3];
+                fwrite();
                 fwrite(partOne, 1, index - size, file2);
-                unsigned char *length = value_to_array(sizeof(value));
+                
                 //length = ;
                 //printf("\nsize: %d %d %d %d", length[0], length[1], length[2], length[3]);
-                framer.size[0] = length[0];
-                framer.size[1] = length[1];
-                framer.size[2] = length[2];
-                framer.size[3] = length[3];
+                framer.size[0] = lengthfile2[0];
+                framer.size[1] = lengthfile2[1];
+                framer.size[2] = lengthfile2[2];
+                framer.size[3] = lengthfile2[3];
 
                 fwrite(&framer, 1, sizeof(framer), file2);
                 fwrite(value, 1, strlen(value), file2);
@@ -42,3 +278,41 @@ file2 = fopen("copy.mp3", "w+b");
                     putc(getc(file2), file);
 
                 }
+                
+                
+                
+                break;
+            }
+
+        }
+
+    }
+    else
+        printf("error");
+
+    //fclose(file);
+}
+void print_header(header head){
+    printf("\nmarker: %d %d %d", head.marker[0], head.marker[1], head.marker[2]);
+    printf("\nversion: %d", head.version[0]);
+    printf("\nsub_version: %d", head.sub_version[0]);
+    printf("\nflags: %d", head.sub_version[0]);
+    //convert_length(head.length);
+}
+int main()
+{
+    //char *locale = setlocale(LC_ALL, "");
+    int number;
+    char buffer[] = "test5.mp3";
+    header head;
+
+    //show(buffer);
+    //get(buffer, "TIT2");
+   // get(buffer, "TPE1");
+    //get(buffer, "TPE2");
+
+    set(buffer, "TIT2", "opaoppppllllllk");
+    //set(buffer, "TPE1", "haha tpe1");
+    //set(buffer, "TPE2", "tpe2");
+    return 0;
+}

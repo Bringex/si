@@ -19,6 +19,8 @@ typedef struct{
     unsigned char flags[2];
 } frame;
 
+
+//convert BE to Num
 int convert_length(unsigned char length[]){
     //printf("\nlength: %d %d %d %d", length[0], length[1], length[2], length[3]);
 
@@ -35,6 +37,8 @@ int convert_length(unsigned char length[]){
 
     return number.val;
 }
+
+//convert Num to BE
 unsigned char *value_to_array(int value){
     typedef union{
         int val;
@@ -63,19 +67,18 @@ void show (char* file_name){
     {
 
         fseek(file, 0, SEEK_SET);
+        //read head TAG
         fread(&head, 1, 10, file);
-        //print_header(head);
-        int size_tag = convert_length(head.length) + 10;
-
-        printf("\n%d", size_tag);
+        //get size of all meta
+        int size_tag = convert_length(head.length);
+        //printf("\n%d", size_tag);
 
         while (ftell(file) < size_tag){
 
             frame framer;
+            //start reading frame head
             fread(&framer, 1, 10, file);
             int size = convert_length(framer.size);
-            //printf("\n%d %d %d %d", framer.size[0],framer.size[1],framer.size[2],framer.size[3]);
-            //printf("\nsize: %d", size);
             unsigned char* mediaFrame = malloc(size * sizeof( char));
             fread(mediaFrame, 1, size, file);
             for (unsigned int i = 0; i < size; i++)
@@ -91,44 +94,6 @@ void show (char* file_name){
 
 
 }
-void show_tag_name (char* file_name){
-
-
-    FILE* file = fopen(file_name, "rb");
-    header head;
-    if ((file) != NULL)
-    {
-
-        fseek(file, 0, SEEK_SET);
-        fread(&head, 1, 10, file);
-        //print_header(head);
-        int size_tag = convert_length(head.length) + 10;
-
-        printf("\n%d", size_tag);
-
-        while (ftell(file) < size_tag){
-
-            frame framer;
-            fread(&framer, 1, 10, file);
-            int size = convert_length(framer.size);
-            //printf("\n%d %d %d %d", framer.size[0],framer.size[1],framer.size[2],framer.size[3]);
-            //printf("\nsize: %d", size);
-            unsigned char* mediaFrame = malloc(size * sizeof( char));
-            fread(mediaFrame, 1, size, file);
-            printf("%c%c%c%c", framer.Frame_ID[0], framer.Frame_ID[1], framer.Frame_ID[2], framer.Frame_ID[3]);
-            printf("\n");
-
-        }
-
-    }
-    else
-        printf("error");
-    fclose(file);
-
-
-}
-
-
 void get (char* file_name, char* TAG){
 
     FILE* file = fopen(file_name, "rb");
@@ -140,8 +105,6 @@ void get (char* file_name, char* TAG){
         fseek(file, 0, SEEK_SET);
         fread(&head, 1, 10, file);
         int size_tag = convert_length(head.length) + 10;
-
-        //printf("\n%d", size_tag);
 
         while (ftell(file) < size_tag){
 
@@ -197,12 +160,17 @@ void set (char* file_name, char* TAG, char* value){
             if (framer.Frame_ID[0] == TAG[0] && framer.Frame_ID[1] == TAG[1] &&
                 framer.Frame_ID[2] == TAG[2] && framer.Frame_ID[3] == TAG[3]
                 ){
+                //found current tag and let's change it
 
                 unsigned int index = ftell(file) - 10;
-                unsigned int nendLength = sizeofFile - ftell(file); //
-                unsigned char* partTwo = malloc((nendLength)* sizeof(char));
-                fread(partTwo, 1, nendLength, file); // save
 
+                //length without current frame
+                unsigned int nendLength = sizeofFile - ftell(file);
+
+                unsigned char* partTwo = malloc((nendLength)* sizeof(char));
+                fread(partTwo, 1, nendLength, file);
+
+                //partOne it's: [10, index - size]
                 unsigned char* partOne = malloc((index - size - 10)* sizeof(char));
 
                 //we need to change tag size
@@ -214,23 +182,29 @@ void set (char* file_name, char* TAG, char* value){
 
                 fseek(file, 0, SEEK_SET);
                 fseek(file2, 0, SEEK_SET);
+                //length of str and convert to BE
                 unsigned char *lengthfile = value_to_array(strlen(value) + 1);
+
+                //read partOne
                 fseek(file, 10, 0);
                 fread(partOne, 1, index - size - 10, file); //-10 it's header
 
+                //new size of tag convert to BE
                 unsigned char *lengthfile2 = value_to_array(newLengthTag);
 
                 head.length[0] = lengthfile2[0];
                 head.length[1] = lengthfile2[1];
                 head.length[2] = lengthfile2[2];
                 head.length[3] = lengthfile2[3];
-                fwrite(&head, 1, sizeof(head), file2);
-                fwrite(partOne, 1, index - size - 10, file2);
 
                 framer.size[0] = lengthfile[0];
                 framer.size[1] = lengthfile[1];
                 framer.size[2] = lengthfile[2];
                 framer.size[3] = lengthfile[3];
+
+                //start write to new cope.mp3
+                fwrite(&head, 1, sizeof(head), file2);
+                fwrite(partOne, 1, index - size - 10, file2);
 
                 fwrite(&framer, 1, sizeof(framer), file2);
                 char cur = 0;
@@ -273,24 +247,35 @@ void print_header(header head){
     printf("\nflags: %d", head.sub_version[0]);
     //convert_length(head.length);
 }
-int main()
+int main(int argc, char* argv[])
 {
-    //int argc, char* argv[]
-    //char *locale = setlocale(LC_ALL, "");
+    char* file = strchr(argv[1], '=') + 1;
 
-    //printf("%\ns", argv[1]);
-    //printf("%\ns", argv[2]);
+    if (argv[2][3] == 'h')
+        show(file);
+    else if (argv[2][2] == 'g')
+    {
+        char* tag = strchr(argv[2], '=') + 1;
+        get(file, tag);
+    }
+    else if (argv[2][2] == 's')
+    {
+        char* tag = strchr(argv[2], '=') + 1;
+        char* value = strchr(argv[3], '=') + 1;
+        printf("\n%s", tag);
+        printf("\n%s", value);
 
-    char* buffer = "full4.mp3";
-    //header head;
+        set(file, tag, value);
+    }
 
-    show(buffer);
-    //get(buffer, "TIT2");
+    //la13.exe --filepath=full4.mp3 --show
+    //la13.exe --filepath=full4.mp3 --get=TIT2
+    //la13.exe --filepath=full4.mp3 --set=TIT2 --value=opalol
     //get(buffer, "TPE1");
     //get(buffer, "TPE2");
-
-    set(buffer, "TIT2", "xuy jopa");
-    set(buffer, "TPE1", "poshel naxuy");
-    set(buffer, "TALB", "govno");
+    //1. TPE1 2. TCON 3. TIT2  4. TRCK   5. TDRC
+    //set(buffer, "TIT2", "TIT2");
+    //set(buffer, "TPE1", "TPE1");
+    //set(buffer, "TALB", "TALB");
     return 0;
 }

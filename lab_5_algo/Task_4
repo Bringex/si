@@ -1,0 +1,240 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <cstdlib>
+#include <queue>
+   
+   
+using namespace std;
+ 
+class Quack {
+    public:
+    unsigned short data[26]{};
+    queue<unsigned short> q;
+    vector<pair<string, int>> labels;
+    Quack() {
+        for (auto item : data) {
+            item = 0;
+        }
+    }
+ 
+    void add() {
+        unsigned short x = q.front();
+        q.pop();
+        unsigned short y = q.front();
+        q.pop();
+        unsigned short result = x + y;
+        q.push(result);
+    }
+ 
+    void sub() {
+        unsigned short x = q.front();
+        q.pop();
+        unsigned short y = q.front();
+        q.pop();
+        unsigned short result = x - y;
+        q.push(result);
+    }
+ 
+    void mul() {
+        unsigned short x = q.front();
+        q.pop();
+        unsigned short y = q.front();
+        q.pop();
+        unsigned short result = x * y;
+        q.push(result);
+    }
+ 
+    void div() {
+        unsigned short x = q.front();
+        q.pop();
+        unsigned short y = q.front();
+        q.pop();
+        if (y == 0) {
+            q.push(0);
+            return;
+        }
+ 
+        unsigned short result = x / y;
+        q.push(result);
+    }
+ 
+    void mod() {
+        unsigned short x = q.front();
+        q.pop();
+        unsigned short y = q.front();
+        q.pop();
+ 
+        if (y == 0) {
+            q.push(0);
+            return;
+        }
+ 
+        unsigned short result = x % y;
+        q.push(result);
+    }
+ 
+    void set(char r) {
+        unsigned short seted = q.front();
+        q.pop();
+        data[r - 'a'] = seted;
+    }
+ 
+    void get(char r) {
+        unsigned short resours = data[r - 'a'];
+        q.push(resours);
+    }
+ 
+    unsigned short print() {
+        unsigned short printed = q.front();
+        q.pop();
+        return printed;
+    }
+ 
+    unsigned short printReg(char r) {
+        return data[r - 'a'];
+    }
+ 
+    char printChar() {
+        unsigned short x = q.front() % 256;
+        q.pop();
+        return (char)x;
+    }
+ 
+    char printRC(char r) {
+        return (char)data[r - 'a'];
+    }
+ 
+    void addLabel(string s, int i) {
+        labels.emplace_back(s, i);
+    }
+ 
+    int jumpLabel(const string& s){
+        for (const auto& item : labels) {
+            if (item.first == s) {
+                return item.second;
+            }
+        }
+        cout << "label not found" << endl;
+        return INT32_MAX;
+    }
+ 
+    void put(unsigned short x){
+        q.push(x);
+    }
+ 
+};
+ 
+int main() {
+   
+    ios_base::sync_with_stdio(false);
+     
+    freopen("quack.in", "r", stdin);
+    freopen("quack.out", "w", stdout);
+    vector<string> v;
+    string s;
+    while (cin >> s) {
+        v.push_back(s);
+    }
+    Quack quack;
+     
+    int index = 0;
+    while (index < v.size()) {
+        s = v[index];
+        if (s[0] == ':') {
+            s = s.erase(0, 1);
+            quack.addLabel(s, index);
+        }
+        index++;
+    }
+ 
+    index = 0;
+ 
+    while (index < v.size()) {
+        s = v[index];
+        switch (s[0]) {
+            case '+':
+                quack.add();
+                break;
+            case '-':
+                quack.sub();
+                break;
+            case '*':
+                quack.mul();
+                break;
+            case '/':
+                quack.div();
+                break;
+            case '%':
+                quack.mod();
+                break;
+            case '>':
+                quack.set(s[1]);
+                break;
+            case '<':
+                quack.get(s[1]);
+                break;
+ 
+            case 'P':
+                if (s.length() > 1) {
+                    cout << quack.printReg(s[1]) << endl;
+                } else {
+                    cout << quack.print() << endl;
+                }
+                break;
+ 
+            case 'C':
+                if (s.length() > 1) {
+                    cout << quack.printRC(s[1]);
+                } else {
+                    cout << quack.printChar();
+                }
+                break;
+ 
+            case ':':
+                s = s.erase(0, 1);
+                quack.addLabel(s, index);
+                break;
+ 
+            case 'J':
+                s = s.erase(0, 1);
+                index = quack.jumpLabel(s);
+                break;
+ 
+            case 'Z':
+                if (quack.printReg(s[1]) == 0) {
+                    s = s.erase(0, 2);
+                    index = quack.jumpLabel(s);
+                }
+                break;
+ 
+            case 'E':
+                if (quack.printReg(s[1]) == quack.printReg(s[2])) {
+                    s = s.erase(0, 3);
+                    index = quack.jumpLabel(s);
+                }
+                break;
+ 
+            case 'G':
+                if (quack.printReg(s[1]) > quack.printReg(s[2])) {
+                    s = s.erase(0, 3);
+                    index = quack.jumpLabel(s);
+                }
+                break;
+ 
+            case 'Q':
+                index = v.size();
+                break;
+ 
+            default:
+                quack.put(stoi(s));
+        }
+        index++;
+    }
+ 
+ 
+     
+    return 0;
+}

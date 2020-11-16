@@ -1,0 +1,75 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <cstdlib>
+   
+   
+using namespace std;
+   
+ 
+vector<int> indexes;  
+struct Node{
+    int key;
+    int left;
+    int right; 
+    int parrent;
+};
+ 
+void Search(vector<Node> mainVector){    
+    int max = 0;
+     
+    for (int i = 0; i < indexes.size(); i++)
+    {
+        int sum = 0;
+        Node now = mainVector[indexes[i]];
+ 
+        //ищем родителя
+        while(now.parrent != -1)
+        {
+            sum++;
+            now = mainVector[now.parrent];
+        }
+        if (sum > max)
+            max = sum;
+    }
+    cout << max + 1;
+}
+ 
+ 
+int main() {
+   
+    ios_base::sync_with_stdio(false);
+     
+    freopen("height.in", "r", stdin);
+    freopen("height.out", "w", stdout);
+    int n, k, l, r;
+    cin >> n;
+    vector<Node> mainVector(n, {0, 0, 0, -1});
+ 
+    for (int i = 0; i < n; i++)
+    {
+        cin >> k >> l >> r;
+        mainVector[i].key = k;
+        mainVector[i].left = l - 1;
+        mainVector[i].right = r - 1;  
+ 
+        if (r - 1 >= 0)
+            mainVector[r - 1].parrent = i;
+        if (l - 1 >= 0)
+            mainVector[l - 1].parrent = i;
+        if (l == 0 && r == 0)
+            indexes.push_back(i);
+    }
+ 
+    if (mainVector.size() > 1)
+        Search(mainVector);
+    else if (mainVector.size() == 1)
+        cout << "1";
+    else
+        cout << "0";
+ 
+     
+    return 0;
+}

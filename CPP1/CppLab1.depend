@@ -1,0 +1,48 @@
+# depslib dependency file v1.0
+1613474373 source:c:\users\mi\desktop\learnas\cpplab1\main.cpp
+	<iostream>
+	"header.h"
+	<vector>
+
+1613475805 c:\users\mi\desktop\learnas\cpplab1\header.h
+	<iostream>
+	<vector>
+	<string>
+
+1613467799 source:c:\users\mi\desktop\learnas\cpplab1\point.cpp
+	<iostream>
+	"header.h"
+
+1613475381 source:c:\users\mi\desktop\learnas\cpplab1\polyline.cpp
+	<iostream>
+	"header.h"
+	<vector>
+
+1613474058 source:c:\users\mi\desktop\learnas\cpplab1\closedpolyline.cpp
+	<iostream>
+	"header.h"
+	<vector>
+
+1613474144 source:c:\users\mi\desktop\learnas\cpplab1\mathproj.cpp
+	<iostream>
+	"header.h"
+	<math.h>
+	<vector>
+
+1613475103 source:c:\users\mi\desktop\learnas\cpplab1\triangle.cpp
+	<iostream>
+	"header.h"
+	<vector>
+
+1612868838 source:c:\users\mi\desktop\learnas\cpplab1\geomath.cpp
+
+1613063748 source:c:\users\mi\desktop\learnas\cpplab1\polymorf.cpp
+	<string>
+	<iostream>
+	"header.h"
+
+1613475492 source:c:\users\mi\desktop\learnas\cpplab1\trapeze.cpp
+	<iostream>
+	"header.h"
+	<vector>
+
